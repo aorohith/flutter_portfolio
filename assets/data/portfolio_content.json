@@ -1,0 +1,111 @@
+{
+  "contentVersion": 2,
+  "profile": {
+    "name": "Rohith A O",
+    "title": "Flutter Developer",
+    "subtitle": "Flutter Developer | Firebase | Flutter Flavours",
+    "description": "Software developer specializing in high-performance Flutter apps for education, gaming, and utility products—shipping scalable releases with flavours, Firebase, and disciplined delivery practices.",
+    "location": "India",
+    "email": "rohithao.dev@gmail.com",
+    "careerStartDate": "2022-08-01"
+  },
+  "socials": [
+    { "label": "GitHub", "url": "#" },
+    { "label": "LinkedIn", "url": "#" }
+  ],
+  "stats": [
+    { "value": 3, "suffix": "+", "label": "Years in industry", "color": "#4F6EF7" },
+    { "value": 45, "suffix": "+", "label": "Flavoured Apps", "color": "#8B5CF6" },
+    { "value": 3, "suffix": "+", "label": "Product Domains", "color": "#06B6D4" },
+    { "value": 1, "suffix": "", "label": "Core Company", "color": "#10B981" }
+  ],
+  "skillRings": [
+    { "label": "Flutter", "percent": 95, "color": "#06B6D4" },
+    { "label": "GetX", "percent": 92, "color": "#8B5CF6" },
+    { "label": "BLoC", "percent": 88, "color": "#4F6EF7" },
+    { "label": "Firebase", "percent": 90, "color": "#F59E0B" },
+    { "label": "Flutter Flavours", "percent": 94, "color": "#10B981" },
+    { "label": "CodeMagic", "percent": 86, "color": "#EF4444" },
+    { "label": "Git", "percent": 90, "color": "#4F6EF7" },
+    { "label": "FlutterFlow", "percent": 80, "color": "#8B5CF6" }
+  ],
+  "skillCategories": [
+    { "title": "Mobile", "color": "#4F6EF7", "items": ["Flutter", "Dart", "Android", "iOS", "Flutter Web/PWA"] },
+    { "title": "State Management", "color": "#8B5CF6", "items": ["GetX", "BLoC", "MVVM"] },
+    { "title": "Backend", "color": "#06B6D4", "items": ["Firebase", "Hasura", "GraphQL", "REST APIs"] },
+    { "title": "Tools", "color": "#10B981", "items": ["GitHub", "Bitbucket", "CodeMagic", "Postman", "Figma"] }
+  ],
+  "projects": [
+    {
+      "title": "BSmart",
+      "subtitle": "Interactive Learning Platform",
+      "description": "Unified platform for multiple colleges with custom-branded Android and iOS applications built using Flutter Flavours.",
+      "stack": ["Flutter", "Flutter Flavours", "Firebase", "CodeMagic", "MVVM"],
+      "color": "#10B981",
+      "emoji": "🎓",
+      "stars": 45,
+      "features": ["45+ flavoured apps in production", "Flutter Web/PWA integration", "Custom deep linking without Firebase", "Zoom Meet SDK webinar support", "Centralized admin and permissions"]
+    },
+    {
+      "title": "Hire That",
+      "subtitle": "Renting Platform",
+      "description": "Mobile rental marketplace that supports item discovery, booking flow, and streamlined user interactions.",
+      "stack": ["Flutter", "Firebase", "GetX"],
+      "color": "#F59E0B",
+      "emoji": "🏠",
+      "stars": 1,
+      "features": ["Real-time backend with Firebase", "GetX-based state management", "Cloud storage integration", "Production Play Store release", "Responsive user flow"]
+    },
+    {
+      "title": "Claw Crazy",
+      "subtitle": "Real-time Gaming Platform",
+      "description": "Remote coin-dropping game with live gameplay and reward logic, engineered for real-time participation.",
+      "stack": ["Flutter", "Firebase", "Hasura", "GraphQL", "Live Streaming"],
+      "color": "#4F6EF7",
+      "emoji": "🕹️",
+      "stars": 1,
+      "features": ["Real-time gameplay transactions", "Live video game feed", "Hasura integration during active development", "Stable behavior across devices/networks", "Australia-only distribution"]
+    },
+    {
+      "title": "Coin Toss",
+      "subtitle": "Customizable Coin Flip Utility",
+      "description": "Coin-toss utility app with dynamic themes and country-specific coin packs managed remotely without app releases.",
+      "stack": ["Flutter", "Firebase Remote Config", "Firebase Storage", "Facebook Ads"],
+      "color": "#8B5CF6",
+      "emoji": "🪙",
+      "stars": 1,
+      "features": ["Theme and coin customization", "Remote content updates without redeploy", "Ad monetization integration", "Firebase-managed dynamic assets", "Play Store release"]
+    }
+  ],
+  "timeline": [
+    {
+      "role": "Software Developer (Flutter)",
+      "company": "BOSC Tech Labs Private Limited",
+      "period": "Aug 2022 - Present",
+      "description": "Building and maintaining scalable Flutter applications for education, gaming, and utility use-cases with production-grade Firebase integrations.",
+      "color": "#4F6EF7"
+    },
+    {
+      "role": "Flutter Trainee",
+      "company": "Brototype, Ernakulam",
+      "period": "Jan 2022 - Jul 2022",
+      "description": "Completed intensive mobile development training with focus on Flutter fundamentals, architecture patterns, and project delivery.",
+      "color": "#8B5CF6"
+    }
+  ],
+  "services": [
+    { "icon": "📱", "title": "Flutter App Development", "description": "Production-ready Flutter apps for Android, iOS, and Web/PWA with scalable architecture.", "color": "#4F6EF7" },
+    { "icon": "🧩", "title": "Multi-flavour App Setup", "description": "Robust Flutter Flavour setup for large-scale white-label deployments and release pipelines.", "color": "#8B5CF6" },
+    { "icon": "☁️", "title": "Firebase Integration", "description": "Authentication, realtime data, storage, remote config, and custom backend workflows.", "color": "#06B6D4" },
+    { "icon": "🚀", "title": "Release Automation", "description": "CodeMagic and workflow automation for repeatable, faster Android and iOS releases.", "color": "#10B981" },
+    { "icon": "🔗", "title": "SDK and API Integration", "description": "Third-party SDK and API integrations including Zoom Meet and GraphQL-based services.", "color": "#F59E0B" },
+    { "icon": "🛠️", "title": "Performance and Stability", "description": "Optimization, bug fixing, and quality improvements backed by structured testing.", "color": "#EF4444" }
+  ],
+  "testimonials": [],
+  "contacts": [
+    { "label": "Email", "value": "rohithao.dev@gmail.com", "url": "mailto:rohithao.dev@gmail.com", "icon": "✉️" },
+    { "label": "Phone", "value": "+91 9562802757", "url": "tel:+919562802757", "icon": "📞" },
+    { "label": "LinkedIn", "value": "LinkedIn profile", "url": "#", "icon": "💼" },
+    { "label": "GitHub", "value": "GitHub profile", "url": "#", "icon": "🐙" }
+  ]
+}
