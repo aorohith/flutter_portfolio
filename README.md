@@ -10,50 +10,36 @@ flutter pub get
 flutter run -d chrome
 ```
 
-## Contact Form Setup (Formspree)
+## Firebase Setup (Free Tier Only)
 
-1. Create a form endpoint in [Formspree](https://formspree.io/).
-2. Pass it through `CONTACT_FORM_ENDPOINT` when running/building.
+This repository is preconfigured for Firebase project `rohithao-portfolio`:
 
-Example:
+- `.firebaserc` points to `rohithao-portfolio`
+- `firebase.json` configures Hosting only (`build/web` + SPA rewrite)
+
+Use Firebase for static web hosting and use a free form provider
+(Formspree/Web3Forms) as `CONTACT_FORM_ENDPOINT`.
+
+### Example with Formspree
+
+1. Create a form endpoint at [Formspree](https://formspree.io/).
+2. Build/run with that endpoint:
 
 ```bash
 flutter run -d chrome \
   --dart-define=CONTACT_FORM_ENDPOINT=https://formspree.io/f/yourFormId
 ```
 
-Production build:
+Production:
 
 ```bash
 flutter build web --release \
   --dart-define=CONTACT_FORM_ENDPOINT=https://formspree.io/f/yourFormId
+npx -y firebase-tools@latest deploy --only hosting --project rohithao-portfolio
 ```
 
-If the endpoint is not configured, the app keeps email/phone visible and shows
-an inline fallback message instead of silently failing.
-
-## Free Hosting Options
-
-### Firebase Hosting
-
-```bash
-npm install -g firebase-tools
-firebase login
-firebase init hosting
-```
-
-Set `build/web` as the public directory, then deploy:
-
-```bash
-firebase deploy
-```
-
-### Cloudflare Pages
-
-1. Create a Pages project from your Git repository.
-2. Build command:
-   `flutter build web --release --dart-define=CONTACT_FORM_ENDPOINT=https://formspree.io/f/yourFormId`
-3. Output directory: `build/web`
+If `CONTACT_FORM_ENDPOINT` is not provided, the app shows a fallback error
+instead of silently failing.
 
 ## Resume Link Recommendation
 

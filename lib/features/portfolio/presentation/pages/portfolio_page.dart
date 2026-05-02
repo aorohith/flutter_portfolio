@@ -1198,20 +1198,46 @@ class _ContactSectionState extends State<_ContactSection> {
     });
 
     try {
-      final response = await http.post(
-        Uri.parse(_contactFormEndpoint),
-        headers: const <String, String>{
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode(<String, String>{
-          'name': _nameController.text.trim(),
-          'email': _emailController.text.trim(),
-          'message': _messageController.text.trim(),
-          'source': 'portfolio-web',
-          'submittedAt': DateTime.now().toIso8601String(),
-        }),
-      );
+      final uri = Uri.parse(_contactFormEndpoint);
+      final isFormspree = uri.host.endsWith('formspree.io');
+
+      late final http.Response response;
+      if (isFormspree) {
+        final body = Uri(
+          queryParameters: <String, String>{
+            'name': _nameController.text.trim(),
+            'email': _emailController.text.trim(),
+            '_replyto': _emailController.text.trim(),
+            'message': _messageController.text.trim(),
+            'source': 'portfolio-web',
+            'submittedAt': DateTime.now().toIso8601String(),
+          },
+        ).query;
+
+        response = await http.post(
+          uri,
+          headers: const <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+          },
+          body: body,
+        );
+      } else {
+        response = await http.post(
+          uri,
+          headers: const <String, String>{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: jsonEncode(<String, String>{
+            'name': _nameController.text.trim(),
+            'email': _emailController.text.trim(),
+            'message': _messageController.text.trim(),
+            'source': 'portfolio-web',
+            'submittedAt': DateTime.now().toIso8601String(),
+          }),
+        );
+      }
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
         throw Exception('Request failed: ${response.statusCode}');
