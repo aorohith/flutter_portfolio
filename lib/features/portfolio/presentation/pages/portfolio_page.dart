@@ -15,6 +15,7 @@ import 'package:flutter_portfolio/features/portfolio/presentation/widgets/ai_wor
 import 'package:flutter_portfolio/features/portfolio/presentation/widgets/portfolio_ui_primitives.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Color _mutedText(BuildContext context) {
@@ -1163,6 +1164,8 @@ class _ContactSectionState extends State<_ContactSection> {
   static const String _contactFormEndpoint = String.fromEnvironment(
     'CONTACT_FORM_ENDPOINT',
   );
+  static const String _lastContactSubmitAtKey = 'last_contact_submit_at_ms';
+  static const Duration _contactSubmitCooldown = Duration(minutes: 5);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -1170,6 +1173,20 @@ class _ContactSectionState extends State<_ContactSection> {
   final TextEditingController _messageController = TextEditingController();
   _ContactSubmitState _submitState = _ContactSubmitState.idle;
   String? _errorMessage;
+
+  Future<Duration?> _getRemainingCooldown() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastSubmitAtMs = prefs.getInt(_lastContactSubmitAtKey);
+    if (lastSubmitAtMs == null) {
+      return null;
+    }
+    final lastSubmitAt = DateTime.fromMillisecondsSinceEpoch(lastSubmitAtMs);
+    final elapsed = DateTime.now().difference(lastSubmitAt);
+    if (elapsed >= _contactSubmitCooldown) {
+      return null;
+    }
+    return _contactSubmitCooldown - elapsed;
+  }
 
   @override
   void dispose() {
@@ -1188,6 +1205,18 @@ class _ContactSectionState extends State<_ContactSection> {
         _submitState = _ContactSubmitState.error;
         _errorMessage =
             'Contact service is not configured yet. Please use email or phone below.';
+      });
+      return;
+    }
+
+    final remainingCooldown = await _getRemainingCooldown();
+    if (remainingCooldown != null) {
+      final minutes = remainingCooldown.inMinutes;
+      final seconds = remainingCooldown.inSeconds.remainder(60);
+      final waitText = minutes > 0 ? '${minutes}m ${seconds}s' : '${seconds}s';
+      setState(() {
+        _submitState = _ContactSubmitState.error;
+        _errorMessage = 'Please wait $waitText before sending another message.';
       });
       return;
     }
@@ -1246,6 +1275,11 @@ class _ContactSectionState extends State<_ContactSection> {
       if (!mounted) {
         return;
       }
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(
+        _lastContactSubmitAtKey,
+        DateTime.now().millisecondsSinceEpoch,
+      );
       setState(() {
         _submitState = _ContactSubmitState.success;
       });
