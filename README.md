@@ -1,17 +1,63 @@
-# flutter_portfolio
+# Flutter Portfolio
 
-A new Flutter project.
+Flutter web portfolio with dark/light theming, section navigation, and a live
+contact form submission flow.
 
-## Getting Started
+## Run Locally
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run -d chrome
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Contact Form Setup (Formspree)
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+1. Create a form endpoint in [Formspree](https://formspree.io/).
+2. Pass it through `CONTACT_FORM_ENDPOINT` when running/building.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Example:
+
+```bash
+flutter run -d chrome \
+  --dart-define=CONTACT_FORM_ENDPOINT=https://formspree.io/f/yourFormId
+```
+
+Production build:
+
+```bash
+flutter build web --release \
+  --dart-define=CONTACT_FORM_ENDPOINT=https://formspree.io/f/yourFormId
+```
+
+If the endpoint is not configured, the app keeps email/phone visible and shows
+an inline fallback message instead of silently failing.
+
+## Free Hosting Options
+
+### Firebase Hosting
+
+```bash
+npm install -g firebase-tools
+firebase login
+firebase init hosting
+```
+
+Set `build/web` as the public directory, then deploy:
+
+```bash
+firebase deploy
+```
+
+### Cloudflare Pages
+
+1. Create a Pages project from your Git repository.
+2. Build command:
+   `flutter build web --release --dart-define=CONTACT_FORM_ENDPOINT=https://formspree.io/f/yourFormId`
+3. Output directory: `build/web`
+
+## Resume Link Recommendation
+
+Use a stable HTTPS URL (custom domain preferred), for example:
+
+- `https://yourname.dev`
+- `https://portfolio.yourname.dev`

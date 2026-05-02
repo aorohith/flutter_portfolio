@@ -10,8 +10,8 @@
     "careerStartDate": "2022-08-01"
   },
   "socials": [
-    { "label": "GitHub", "url": "#" },
-    { "label": "LinkedIn", "url": "#" }
+    { "label": "GitHub", "url": "https://github.com/aorohith" },
+    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/aorohith/" }
   ],
   "stats": [
     { "value": 3, "suffix": "+", "label": "Years in industry", "color": "#4F6EF7" },
@@ -105,7 +105,7 @@
   "contacts": [
     { "label": "Email", "value": "rohithao.dev@gmail.com", "url": "mailto:rohithao.dev@gmail.com", "icon": "✉️" },
     { "label": "Phone", "value": "+91 9562802757", "url": "tel:+919562802757", "icon": "📞" },
-    { "label": "LinkedIn", "value": "LinkedIn profile", "url": "#", "icon": "💼" },
-    { "label": "GitHub", "value": "GitHub profile", "url": "#", "icon": "🐙" }
+    { "label": "LinkedIn", "value": "LinkedIn profile", "url": "https://www.linkedin.com/in/aorohith/", "icon": "💼" },
+    { "label": "GitHub", "value": "GitHub profile", "url": "https://github.com/aorohith", "icon": "🐙" }
   ]
 }

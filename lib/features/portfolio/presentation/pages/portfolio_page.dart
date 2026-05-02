@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -13,9 +14,32 @@ import 'package:flutter_portfolio/features/portfolio/presentation/utils/display_
 import 'package:flutter_portfolio/features/portfolio/presentation/widgets/ai_workflow_section.dart';
 import 'package:flutter_portfolio/features/portfolio/presentation/widgets/portfolio_ui_primitives.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 Color _mutedText(BuildContext context) {
   return Theme.of(context).colorScheme.onSurfaceVariant;
+}
+
+bool _hasActionableUrl(String url) {
+  final normalized = url.trim();
+  return normalized.isNotEmpty && normalized != '#';
+}
+
+Future<void> _openExternalLink(BuildContext context, String url) async {
+  if (!_hasActionableUrl(url)) {
+    return;
+  }
+  final uri = Uri.tryParse(url.trim());
+  if (uri == null) {
+    return;
+  }
+  final didLaunch = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!didLaunch && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Unable to open link right now.')),
+    );
+  }
 }
 
 class PortfolioPage extends ConsumerStatefulWidget {
@@ -1124,15 +1148,98 @@ class _TestimonialsSection extends StatelessWidget {
   }
 }
 
-class _ContactSection extends StatelessWidget {
+enum _ContactSubmitState { idle, submitting, success, error }
+
+class _ContactSection extends StatefulWidget {
   const _ContactSection({required this.content, super.key});
 
   final PortfolioContent content;
 
   @override
+  State<_ContactSection> createState() => _ContactSectionState();
+}
+
+class _ContactSectionState extends State<_ContactSection> {
+  static const String _contactFormEndpoint = String.fromEnvironment(
+    'CONTACT_FORM_ENDPOINT',
+  );
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+  _ContactSubmitState _submitState = _ContactSubmitState.idle;
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSubmit() async {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+    if (_contactFormEndpoint.isEmpty) {
+      setState(() {
+        _submitState = _ContactSubmitState.error;
+        _errorMessage =
+            'Contact service is not configured yet. Please use email or phone below.';
+      });
+      return;
+    }
+
+    setState(() {
+      _submitState = _ContactSubmitState.submitting;
+      _errorMessage = null;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(_contactFormEndpoint),
+        headers: const <String, String>{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'name': _nameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'message': _messageController.text.trim(),
+          'source': 'portfolio-web',
+          'submittedAt': DateTime.now().toIso8601String(),
+        }),
+      );
+
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw Exception('Request failed: ${response.statusCode}');
+      }
+
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _submitState = _ContactSubmitState.success;
+      });
+      _nameController.clear();
+      _emailController.clear();
+      _messageController.clear();
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _submitState = _ContactSubmitState.error;
+        _errorMessage =
+            'Message could not be sent right now. Please contact via email or phone.';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final sent = ValueNotifier<bool>(false);
     return _SectionBlock(
       label: 'Contact',
       title: 'Let us Build Together',
@@ -1150,36 +1257,47 @@ class _ContactSection extends StatelessWidget {
                     style: TextStyle(color: _mutedText(context), height: 1.8),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  ...content.contacts.map(
+                  ...widget.content.contacts.map(
                     (contact) => Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            contact.icon,
-                            style: const TextStyle(fontSize: 20),
+                      child: InkWell(
+                        onTap: _hasActionableUrl(contact.url)
+                            ? () => _openExternalLink(context, contact.url)
+                            : null,
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.xs,
                           ),
-                          const SizedBox(width: AppSpacing.md),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: <Widget>[
                               Text(
-                                contact.label,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: _mutedText(context),
-                                ),
+                                contact.icon,
+                                style: const TextStyle(fontSize: 20),
                               ),
-                              Text(
-                                contact.value,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
-                                ),
+                              const SizedBox(width: AppSpacing.md),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    contact.label,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: _mutedText(context),
+                                    ),
+                                  ),
+                                  Text(
+                                    contact.value,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -1189,15 +1307,12 @@ class _ContactSection extends StatelessWidget {
             const SizedBox(width: AppSpacing.xl),
             Expanded(
               child: GlassCard(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: sent,
-                  builder: (context, value, _) {
-                    if (value) {
-                      return Column(
+                child: _submitState == _ContactSubmitState.success
+                    ? Column(
                         children: <Widget>[
-                          Text('🎉', style: TextStyle(fontSize: 52)),
-                          SizedBox(height: AppSpacing.md),
-                          Text(
+                          const Text('🎉', style: TextStyle(fontSize: 52)),
+                          const SizedBox(height: AppSpacing.md),
+                          const Text(
                             'Message Sent!',
                             style: TextStyle(
                               fontSize: 24,
@@ -1208,41 +1323,85 @@ class _ContactSection extends StatelessWidget {
                             'I will get back within 24 hours.',
                             style: TextStyle(color: _mutedText(context)),
                           ),
-                        ],
-                      );
-                    }
-                    return Form(
-                      key: formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const Text(
-                            'Send a Message',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          const _InputField(label: 'Your Name'),
-                          const SizedBox(height: AppSpacing.md),
-                          const _InputField(label: 'Email Address'),
-                          const SizedBox(height: AppSpacing.md),
-                          const _InputField(label: 'Message', maxLines: 5),
                           const SizedBox(height: AppSpacing.lg),
                           GradientButton(
-                            label: 'Send Message',
+                            label: 'Send Another',
+                            secondary: true,
                             onTap: () {
-                              if (formKey.currentState?.validate() ?? false) {
-                                sent.value = true;
-                              }
+                              setState(() {
+                                _submitState = _ContactSubmitState.idle;
+                              });
                             },
                           ),
                         ],
+                      )
+                    : Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Text(
+                              'Send a Message',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            _InputField(
+                              label: 'Your Name',
+                              controller: _nameController,
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            _InputField(
+                              label: 'Email Address',
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                final text = value?.trim() ?? '';
+                                if (text.isEmpty) {
+                                  return 'Required';
+                                }
+                                final emailRegex = RegExp(
+                                  r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                                );
+                                if (!emailRegex.hasMatch(text)) {
+                                  return 'Enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            _InputField(
+                              label: 'Message',
+                              controller: _messageController,
+                              maxLines: 5,
+                            ),
+                            if (_submitState == _ContactSubmitState.error) ...<
+                              Widget
+                            >[
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                _errorMessage ?? 'Something went wrong.',
+                                style: const TextStyle(
+                                  color: Colors.redAccent,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: AppSpacing.lg),
+                            GradientButton(
+                              label: _submitState == _ContactSubmitState.submitting
+                                  ? 'Sending...'
+                                  : 'Send Message',
+                              onTap:
+                                  _submitState == _ContactSubmitState.submitting
+                                  ? null
+                                  : _handleSubmit,
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
-                ),
               ),
             ),
           ],
@@ -1281,21 +1440,29 @@ class _Footer extends StatelessWidget {
                   .map(
                     (item) => Padding(
                       padding: const EdgeInsets.only(left: 8),
-                      child: Container(
-                        width: 34,
-                        height: 34,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white.withValues(alpha: 0.06)
-                              : Theme.of(context).colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(AppRadius.sm),
-                        ),
-                        child: Text(
-                          item.label.substring(0, 1),
-                          style: TextStyle(
-                            color: _mutedText(context),
-                            fontWeight: FontWeight.w600,
+                      child: InkWell(
+                        onTap: _hasActionableUrl(item.url)
+                            ? () => _openExternalLink(context, item.url)
+                            : null,
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        child: Container(
+                          width: 34,
+                          height: 34,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white.withValues(alpha: 0.06)
+                                : Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
+                          ),
+                          child: Text(
+                            item.label.substring(0, 1),
+                            style: TextStyle(
+                              color: _mutedText(context),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -1789,16 +1956,27 @@ class _TimelineTile extends StatelessWidget {
 }
 
 class _InputField extends StatelessWidget {
-  const _InputField({required this.label, this.maxLines = 1});
+  const _InputField({
+    required this.label,
+    required this.controller,
+    this.maxLines = 1,
+    this.keyboardType,
+    this.validator,
+  });
 
   final String label;
+  final TextEditingController controller;
   final int maxLines;
+  final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       maxLines: maxLines,
-      validator: (value) {
+      keyboardType: keyboardType,
+      validator: validator ?? (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Required';
         }
