@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_portfolio/core/layout/breakpoints.dart';
+import 'package:flutter_portfolio/core/layout/content_width_scope.dart';
 import 'package:flutter_portfolio/core/constants/app_colors.dart';
 import 'package:flutter_portfolio/core/constants/app_radius.dart';
 import 'package:flutter_portfolio/core/constants/app_spacing.dart';
@@ -29,12 +31,23 @@ class ConstrainedContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final horizontal = Breakpoints.contentHorizontalPadding(
+      MediaQuery.sizeOf(context).width,
+    );
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: AppSpacing.maxContentWidth),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          child: child,
+          padding: EdgeInsets.symmetric(horizontal: horizontal),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final w = constraints.maxWidth;
+              return ContentWidthScope(
+                width: w,
+                child: SizedBox(width: w, child: child),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -207,7 +220,9 @@ class _GradientButtonState extends State<GradientButton> {
               fontSize: 15,
               color: widget.secondary
                   ? AppColors.primary
-                  : (widget.ghost ? colorScheme.onSurfaceVariant : Colors.white),
+                  : (widget.ghost
+                        ? colorScheme.onSurfaceVariant
+                        : Colors.white),
             ),
           ),
         ),

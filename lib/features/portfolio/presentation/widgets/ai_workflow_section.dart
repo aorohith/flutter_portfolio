@@ -52,6 +52,7 @@ class AiWorkflowSection extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.section),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ConstrainedContent(
               child: Column(
@@ -62,10 +63,7 @@ class AiWorkflowSection extends StatelessWidget {
                     title: data.sectionTitle,
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  _WorkflowHero(
-                    hero: data.hero,
-                    onNavigate: onNavigate,
-                  ),
+                  _WorkflowHero(hero: data.hero, onNavigate: onNavigate),
                   const SizedBox(height: AppSpacing.xxl),
                   Semantics(
                     header: true,
@@ -326,10 +324,7 @@ class _AiToolCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppRadius.md),
                   gradient: LinearGradient(
-                    colors: <Color>[
-                      color,
-                      color.withValues(alpha: 0.65),
-                    ],
+                    colors: <Color>[color, color.withValues(alpha: 0.65)],
                   ),
                 ),
                 child: Text(
@@ -419,16 +414,20 @@ class _PipelineList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: pipeline.asMap().entries.map((entry) {
-        final i = entry.key;
-        final stage = entry.value;
-        final isLast = i == pipeline.length - 1;
-        return _PipelineRow(
-          index: i + 1,
-          stage: stage,
-          showConnector: !isLast,
-        );
-      }).toList(growable: false),
+      children: pipeline
+          .asMap()
+          .entries
+          .map((entry) {
+            final i = entry.key;
+            final stage = entry.value;
+            final isLast = i == pipeline.length - 1;
+            return _PipelineRow(
+              index: i + 1,
+              stage: stage,
+              showConnector: !isLast,
+            );
+          })
+          .toList(growable: false),
     );
   }
 }
@@ -496,10 +495,7 @@ class _PipelineRow extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     stage.description,
-                    style: TextStyle(
-                      color: _wfMuted(context),
-                      height: 1.6,
-                    ),
+                    style: TextStyle(color: _wfMuted(context), height: 1.6),
                   ),
                   if (stage.tools.isNotEmpty) ...<Widget>[
                     const SizedBox(height: AppSpacing.md),
@@ -514,16 +510,16 @@ class _PipelineRow extends StatelessWidget {
                                 vertical: 5,
                               ),
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainerHighest,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
                                 borderRadius: BorderRadius.circular(
                                   AppRadius.full,
                                 ),
                                 border: Border.all(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .outlineVariant,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.outlineVariant,
                                 ),
                               ),
                               child: Text(
@@ -568,8 +564,7 @@ class _ProductivitySignals extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const spacing = AppSpacing.lg;
-        final itemWidth =
-            (constraints.maxWidth - spacing * (cols - 1)) / cols;
+        final itemWidth = (constraints.maxWidth - spacing * (cols - 1)) / cols;
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
@@ -640,10 +635,7 @@ class _SignalCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Text(
             signal.label,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 15,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
           ),
           const SizedBox(height: 6),
           Text(
@@ -677,7 +669,10 @@ class _BulletPanel extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    const Text('✓ ', style: TextStyle(color: AppColors.primary)),
+                    const Text(
+                      '✓ ',
+                      style: TextStyle(color: AppColors.primary),
+                    ),
                     Expanded(
                       child: Text(
                         b,
@@ -709,8 +704,7 @@ class _UseCasesGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const spacing = AppSpacing.lg;
-        final itemWidth =
-            (constraints.maxWidth - spacing * (cols - 1)) / cols;
+        final itemWidth = (constraints.maxWidth - spacing * (cols - 1)) / cols;
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
@@ -799,10 +793,7 @@ class _EthicsPanel extends StatelessWidget {
         children: <Widget>[
           Text(
             headline,
-            style: const TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 22,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 22),
           ),
           const SizedBox(height: AppSpacing.md),
           ...points.map(
@@ -815,10 +806,7 @@ class _EthicsPanel extends StatelessWidget {
                   Expanded(
                     child: Text(
                       p,
-                      style: TextStyle(
-                        color: _wfMuted(context),
-                        height: 1.65,
-                      ),
+                      style: TextStyle(color: _wfMuted(context), height: 1.65),
                     ),
                   ),
                 ],
@@ -895,10 +883,7 @@ class _CtaBanner extends StatelessWidget {
       children: <Widget>[
         Text(
           cta.headline,
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 26,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 26),
         ),
         const SizedBox(height: AppSpacing.sm),
         ...cta.lines.map(
@@ -906,10 +891,7 @@ class _CtaBanner extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 4),
             child: Text(
               line,
-              style: TextStyle(
-                color: _wfMuted(context),
-                fontSize: 14,
-              ),
+              style: TextStyle(color: _wfMuted(context), fontSize: 14),
             ),
           ),
         ),
