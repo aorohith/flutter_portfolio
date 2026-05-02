@@ -15,7 +15,7 @@
             "request": "launch",
             "type": "dart",
             "toolArgs": [
-                "--dart-define=CONTACT_FORM_ENDPOINT=https://formspree.io/f/yourFormId"
+                "--dart-define-from-file=dart_defines.json"
             ]
         },
         {
