@@ -1,5 +1,8 @@
 {
   "hosting": {
+    "predeploy": [
+      "bash tool/hosting_predeploy.sh"
+    ],
     "public": "build/web",
     "ignore": [
       "firebase.json",

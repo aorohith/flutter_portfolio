@@ -170,12 +170,18 @@ This repo targets Firebase project **`rohithao-portfolio`**:
 
 - [`.firebaserc`](.firebaserc) — default project alias
 - [`firebase.json`](firebase.json) — `public: build/web`, SPA rewrite to `index.html`
+- **`hosting.predeploy`** — runs [`tool/hosting_predeploy.sh`](tool/hosting_predeploy.sh): checks that [`dart_defines.json`](dart_defines.example.json) exists, **`CONTACT_FORM_ENDPOINT`** is set (not empty / not the Formspree placeholder), then **`flutter build web --release --dart-define-from-file=dart_defines.json`**.
 
-**Build** (with contact endpoint) then **deploy**:
+So a normal Hosting deploy **always** rebuilds web with the contact form endpoint baked in:
+
+```bash
+npx -y firebase-tools@latest deploy --only hosting --project rohithao-portfolio
+```
+
+Manual build (same flags as predeploy):
 
 ```bash
 flutter build web --release --dart-define-from-file=dart_defines.json
-npx -y firebase-tools@latest deploy --only hosting --project rohithao-portfolio
 ```
 
 Ensure the Formspree form (or your backend) allows requests from your deployed
