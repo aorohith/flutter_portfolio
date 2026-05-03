@@ -600,7 +600,7 @@ class _HeroSection extends StatelessWidget {
                 width: 120,
                 height: 120,
                 child: Image.asset(
-                  PortfolioAssets.portfolioIcon,
+                  PortfolioAssets.heroPhoto,
                   fit: BoxFit.cover,
                   semanticLabel: 'Photo of ${profile.name}',
                   filterQuality: FilterQuality.medium,
