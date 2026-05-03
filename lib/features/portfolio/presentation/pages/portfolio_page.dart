@@ -579,6 +579,7 @@ class _HeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = content.profile;
+    final resumeDownloadUrl = profile.resumeUrl?.trim();
     final width = MediaQuery.sizeOf(context).width;
     final twoColumns = Breakpoints.heroShowsSideAvatar(width);
     final headlineSize = width < Breakpoints.compact
@@ -705,7 +706,13 @@ class _HeroSection extends StatelessWidget {
           children: <Widget>[
             GradientButton(label: 'View Projects', onTap: onProjectsTap),
             GradientButton(label: 'Hire Me', onTap: onHireTap, secondary: true),
-            const GradientButton(label: 'Download CV', ghost: true),
+            if (_hasActionableUrl(resumeDownloadUrl ?? ''))
+              GradientButton(
+                label: 'Download CV',
+                ghost: true,
+                onTap: () =>
+                    _openExternalLink(context, resumeDownloadUrl!),
+              ),
           ],
         ),
       ],

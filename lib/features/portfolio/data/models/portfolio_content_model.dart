@@ -25,6 +25,7 @@ class PortfolioContentModel extends PortfolioContent {
         location: profileJson['location'] as String,
         email: profileJson['email'] as String,
         careerStartDate: profileJson['careerStartDate'] as String?,
+        resumeUrl: profileJson['resumeUrl'] as String?,
       ),
       socials: (json['socials'] as List<dynamic>)
           .map(

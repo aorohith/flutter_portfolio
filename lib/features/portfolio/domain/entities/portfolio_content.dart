@@ -33,6 +33,7 @@ class Profile {
     required this.location,
     required this.email,
     this.careerStartDate,
+    this.resumeUrl,
   });
 
   final String name;
@@ -43,6 +44,9 @@ class Profile {
   final String email;
   /// ISO 8601 date (e.g. `2022-08-01`) for tenure shown in stats.
   final String? careerStartDate;
+
+  /// HTTPS URL to a PDF or CV page; opens in browser / external viewer when set.
+  final String? resumeUrl;
 }
 
 class SocialLink {
