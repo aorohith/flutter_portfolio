@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -20,6 +20,8 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Rohith A O — Flutter developer portfolio. Projects, experience, and contact.">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -27,11 +29,22 @@
   <meta name="apple-mobile-web-app-title" content="Rohith Portfolio">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <!-- Favicon (generated from assets/data/portfolio_icon.jpg via ImageMagick) -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>Rohith A O · Flutter Developer</title>
+  <title>Rohith A O · Portfolio</title>
   <link rel="manifest" href="manifest.json">
+  <!-- Blank shell until Flutter paints; matches system light/dark (no icon splash). -->
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #000000;
+    }
+    @media (prefers-color-scheme: light) {
+      html, body { background-color: #FFFFFF; }
+    }
+  </style>
 </head>
 <body>
   <!--

@@ -1,12 +1,14 @@
 {
-    "name": "flutter_portfolio",
-    "short_name": "flutter_portfolio",
-    "start_url": ".",
+    "name": "Rohith A O · Portfolio",
+    "short_name": "Rohith Portfolio",
+    "id": "/",
+    "start_url": "/",
+    "scope": "/",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FFFFFF",
+    "theme_color": "#4F6EF7",
+    "description": "Rohith A O — Flutter developer portfolio. Projects, experience, and contact.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

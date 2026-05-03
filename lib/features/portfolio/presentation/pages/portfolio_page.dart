@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_portfolio/core/constants/app_colors.dart';
+import 'package:flutter_portfolio/core/constants/portfolio_assets.dart';
 import 'package:flutter_portfolio/core/constants/app_radius.dart';
 import 'package:flutter_portfolio/core/constants/app_spacing.dart';
 import 'package:flutter_portfolio/core/layout/breakpoints.dart';
@@ -577,12 +579,6 @@ class _HeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = content.profile;
-    final nameParts = profile.name.split(' ');
-    final initials = nameParts
-        .where((part) => part.isNotEmpty)
-        .take(2)
-        .map((part) => part[0].toUpperCase())
-        .join();
     final width = MediaQuery.sizeOf(context).width;
     final twoColumns = Breakpoints.heroShowsSideAvatar(width);
     final headlineSize = width < Breakpoints.compact
@@ -598,22 +594,25 @@ class _HeroSection extends StatelessWidget {
       child: GlassCard(
         child: Column(
           children: <Widget>[
-            Container(
-              width: 120,
-              height: 120,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: <Color>[AppColors.primary, AppColors.accent1],
-                ),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                initials,
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 42,
-                  color: Colors.white,
+            ClipOval(
+              child: SizedBox(
+                width: 120,
+                height: 120,
+                child: Image.asset(
+                  PortfolioAssets.portfolioIcon,
+                  fit: BoxFit.cover,
+                  semanticLabel: 'Photo of ${profile.name}',
+                  filterQuality: FilterQuality.medium,
+                  errorBuilder: (context, error, stackTrace) => ColoredBox(
+                    color: AppColors.primary,
+                    child: Center(
+                      child: Icon(
+                        Icons.person_rounded,
+                        size: 56,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -1212,61 +1211,47 @@ class _ServicesSection extends StatelessWidget {
               maxColumns: 3,
               minTileWidth: 260,
             );
-            final aspect = cols >= 3
-                ? 1.08
-                : cols == 2
-                ? 1.18
-                : 1.38;
-            return GridView.builder(
-              itemCount: services.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: cols,
-                crossAxisSpacing: AppSpacing.lg,
-                mainAxisSpacing: AppSpacing.lg,
-                childAspectRatio: aspect,
-              ),
-              itemBuilder: (context, index) {
-                final service = services[index];
-                final color = hexToColor(service.color);
-                return GlassCard(
-                  hover: true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(service.icon, style: const TextStyle(fontSize: 28)),
-                      const SizedBox(height: AppSpacing.md),
-                      Text(
-                        service.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 17,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Expanded(
-                        child: Text(
-                          service.description,
-                          style: TextStyle(
-                            color: _mutedText(context),
-                            height: 1.7,
-                            fontSize: 14,
+            final gap = AppSpacing.lg;
+            final tileWidth = (cw - gap * (cols - 1)) / cols;
+            return Wrap(
+              spacing: gap,
+              runSpacing: gap,
+              children: <Widget>[
+                for (final service in services)
+                  SizedBox(
+                    width: tileWidth,
+                    child: GlassCard(
+                      hover: true,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            service.icon,
+                            style: const TextStyle(fontSize: 28),
                           ),
-                        ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            service.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 17,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            service.description,
+                            style: TextStyle(
+                              color: _mutedText(context),
+                              height: 1.7,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Learn more ->',
-                        style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                );
-              },
+              ],
             );
           },
         ),
@@ -1788,6 +1773,9 @@ class _Footer extends StatelessWidget {
                   )
                   .toList(growable: false),
             );
+            final footerCredit = kIsWeb
+                ? '© $year $profileName'
+                : '© $year $profileName · Built with Flutter Web';
             if (Breakpoints.useWideTwoColumns(cw)) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1799,7 +1787,7 @@ class _Footer extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      '© $year $profileName · Built with Flutter Web',
+                      footerCredit,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: _mutedText(context),
@@ -1820,7 +1808,7 @@ class _Footer extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  '© $year $profileName · Built with Flutter Web',
+                  footerCredit,
                   style: TextStyle(color: _mutedText(context), fontSize: 13),
                 ),
                 const SizedBox(height: AppSpacing.md),
