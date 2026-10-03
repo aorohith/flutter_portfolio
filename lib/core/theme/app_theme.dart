@@ -3,7 +3,12 @@ import 'package:flutter_portfolio/core/constants/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final appThemeModeProvider = StateProvider<bool>((_) => true);
+/// `true` = dark. Defaults to the platform brightness until a saved choice loads.
+final appThemeModeProvider = StateProvider<bool>(
+  (_) =>
+      WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+      Brightness.dark,
+);
 
 final class AppTheme {
   const AppTheme._();
