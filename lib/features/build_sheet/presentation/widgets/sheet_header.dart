@@ -5,7 +5,15 @@ import 'package:flutter_portfolio/features/build_sheet/data/sheet_content.dart';
 import 'package:flutter_portfolio/features/build_sheet/presentation/theme/sheet_theme.dart';
 import 'package:flutter_portfolio/features/build_sheet/presentation/widgets/sheet_widgets.dart';
 
-enum SheetSection { top, work, capabilities, experience, contact }
+enum SheetSection {
+  top,
+  about,
+  work,
+  capabilities,
+  services,
+  experience,
+  contact,
+}
 
 class SheetHeader extends StatelessWidget {
   const SheetHeader({
@@ -49,11 +57,16 @@ class SheetHeader extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          if (width > 640)
+                            _NavLink(
+                              'About',
+                              () => onNavigate(SheetSection.about),
+                            ),
                           _NavLink('Work', () => onNavigate(SheetSection.work)),
                           if (width > 640)
                             _NavLink(
-                              'Capabilities',
-                              () => onNavigate(SheetSection.capabilities),
+                              'Services',
+                              () => onNavigate(SheetSection.services),
                             ),
                           if (width > 430)
                             _NavLink(

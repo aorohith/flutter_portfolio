@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_portfolio/core/constants/portfolio_assets.dart';
 import 'package:flutter_portfolio/features/build_sheet/data/sheet_content.dart';
 import 'package:flutter_portfolio/features/build_sheet/presentation/theme/sheet_theme.dart';
 import 'package:flutter_portfolio/features/build_sheet/presentation/widgets/sheet_motion.dart';
@@ -190,7 +191,7 @@ class ContactSection extends StatelessWidget {
           const SizedBox(height: 28),
           const Reveal(child: ActionRow(includeResume: true)),
           const SizedBox(height: 22),
-          const AvailabilityRow(),
+          const AvailabilityRow(text: SheetContent.contactAvailability),
         ],
       ),
     );
@@ -247,6 +248,266 @@ class SheetFooter extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Portrait plus a short bio. The photo is greyscale until hovered.
+class AboutSection extends StatelessWidget {
+  const AboutSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = SheetPalette.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    final narrow = Sheet.isNarrow(width);
+    final bigSize = Sheet.fluid(width, 24, 2.8, 35.2);
+
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Semantics(
+          header: true,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: bigSize * 15),
+            child: Reveal(
+              child: Text(
+                SheetContent.aboutBig,
+                style: SheetType.display(
+                  p.fg,
+                  bigSize,
+                  weight: FontWeight.w600,
+                  tracking: -0.02,
+                  height: 1.2,
+                ),
+              ),
+            ),
+          ),
+        ),
+        for (final paragraph in SheetContent.aboutBody) ...<Widget>[
+          const SizedBox(height: 18),
+          Reveal(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: Text(paragraph, style: SheetType.body(p.muted, 16.8)),
+            ),
+          ),
+        ],
+      ],
+    );
+
+    final gap = Sheet.fluid(width, 24, 4, 56);
+    final inner = narrow
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 240),
+                child: const _Portrait(),
+              ),
+              SizedBox(height: gap),
+              copy,
+            ],
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(width: 260, child: _Portrait()),
+              SizedBox(width: gap),
+              Expanded(child: copy),
+            ],
+          );
+
+    return SheetBlock(
+      child: SheetColumns(
+        gap: 48,
+        rowGap: 28,
+        left: const Reveal(child: MonoLabel('About')),
+        right: inner,
+      ),
+    );
+  }
+}
+
+class _Portrait extends StatefulWidget {
+  const _Portrait();
+
+  @override
+  State<_Portrait> createState() => _PortraitState();
+}
+
+class _PortraitState extends State<_Portrait> {
+  bool _hover = false;
+
+  static ColorFilter _saturation(double s) {
+    const r = 0.2126;
+    const g = 0.7152;
+    const b = 0.0722;
+    final inv = 1 - s;
+    return ColorFilter.matrix(<double>[
+      r * inv + s, g * inv, b * inv, 0, 0, //
+      r * inv, g * inv + s, b * inv, 0, 0, //
+      r * inv, g * inv, b * inv + s, 0, 0, //
+      0, 0, 0, 1, 0,
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = SheetPalette.of(context);
+    return Reveal(
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(end: _hover ? 1 : 0),
+                  duration: const Duration(milliseconds: 600),
+                  curve: kExpoOut,
+                  builder: (BuildContext context, double t, Widget? child) {
+                    return ColorFiltered(
+                      colorFilter: _saturation(t),
+                      child: child,
+                    );
+                  },
+                  child: Semantics(
+                    image: true,
+                    label: 'Portrait of Rohith A O',
+                    child: Image.asset(
+                      PortfolioAssets.portrait,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.medium,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            MonoLabel(SheetContent.portraitCaption, color: p.muted),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Six service cards in a hairline grid (3, 2 or 1 columns by width).
+class ServicesSection extends StatelessWidget {
+  const ServicesSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = SheetPalette.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    final columns = width <= 560 ? 1 : (width <= 900 ? 2 : 3);
+    final items = SheetContent.services;
+    final rows = <List<ServiceItem>>[
+      for (var i = 0; i < items.length; i += columns)
+        items.sublist(
+          i,
+          i + columns > items.length ? items.length : i + columns,
+        ),
+    ];
+
+    return SheetBlock(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SectionHead(
+            kicker: 'Services',
+            title: 'What I can build for you',
+            lead: SheetContent.servicesLead,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: p.line),
+                left: BorderSide(color: p.line),
+              ),
+            ),
+            child: Column(
+              children: <Widget>[
+                for (var r = 0; r < rows.length; r++)
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        for (var c = 0; c < columns; c++)
+                          Expanded(
+                            child: c < rows[r].length
+                                ? Reveal(
+                                    delay: Duration(
+                                      milliseconds: 70 * (r * columns + c),
+                                    ),
+                                    dy: 22,
+                                    child: _ServiceCell(item: rows[r][c]),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ServiceCell extends StatefulWidget {
+  const _ServiceCell({required this.item});
+
+  final ServiceItem item;
+
+  @override
+  State<_ServiceCell> createState() => _ServiceCellState();
+}
+
+class _ServiceCellState extends State<_ServiceCell> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = SheetPalette.of(context);
+    final item = widget.item;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
+        decoration: BoxDecoration(
+          color: _hover ? p.surface : Colors.transparent,
+          border: Border(
+            right: BorderSide(color: p.line),
+            bottom: BorderSide(color: p.line),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              item.kind.toUpperCase(),
+              style: SheetType.label(p).copyWith(color: p.accent),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              item.title,
+              style: SheetType.display(p.fg, 21.6, tracking: -0.015),
+            ),
+            const SizedBox(height: 10),
+            Text(item.description, style: SheetType.body(p.muted, 15.7)),
+          ],
         ),
       ),
     );

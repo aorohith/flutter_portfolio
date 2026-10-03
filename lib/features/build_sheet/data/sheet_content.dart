@@ -64,6 +64,14 @@ class Capability {
   final List<String> tags;
 }
 
+class ServiceItem {
+  const ServiceItem(this.kind, this.title, this.description);
+
+  final String kind;
+  final String title;
+  final String description;
+}
+
 class EduRow {
   const EduRow(this.period, this.text);
 
@@ -125,7 +133,8 @@ abstract final class SheetContent {
   static const String kicker = 'Senior Flutter developer · Kerala, India';
   static const String lede =
       'I take Flutter apps from architecture to store release, and I keep one codebase shipping many apps.';
-  static const String availability = 'Open to remote, hybrid and on-site roles';
+  static const String availability =
+      'Open to full-time roles (remote, hybrid, on-site) and freelance work';
 
   static const List<(int, String, String)> stats = <(int, String, String)>[
     (49, '', 'production apps shipped'),
@@ -259,7 +268,7 @@ abstract final class SheetContent {
       decisions: <String>[
         'Wrote a script that generates new college apps from a list of package IDs, so onboarding became a repeatable, scripted step.',
         'Set up Codemagic CI/CD for Android and iOS releases so the release process scaled as more colleges were added.',
-        'Integrated the Zoom Meeting SDK with custom deep links to run webinars and virtual events inside the app.',
+        'Integrated the Zoom Meeting SDK with custom deep links, built without Firebase, to run webinars and virtual events inside the app.',
         'Added Flutter Web and PWA support, extending access to desktop and mobile browsers.',
         'Manage the central admin system for settings, themes and user permissions across all college apps.',
         'Structured the app on MVVM and verified stability with UI tests.',
@@ -332,12 +341,12 @@ abstract final class SheetContent {
   static const List<SmallProject> smallProjects = <SmallProject>[
     SmallProject('Hire That', 'Rental marketplace', <Seg>[
       Seg(
-        'A rental app built with Firebase Authentication, Realtime Database and Cloud Storage, with GetX for state management.',
+        'A rental marketplace with item discovery and a booking flow, built on Firebase Authentication, Realtime Database and Cloud Storage, with GetX for state management. Released on the Play Store.',
       ),
     ]),
     SmallProject('Coin Toss', 'Customisable coin-flip app', <Seg>[
       Seg(
-        'Ships new coins and themes through Firebase Remote Config and Storage with no store release, and earns through Facebook Ads. ',
+        'Ships new themes and country-specific coin packs through Firebase Remote Config and Storage with no store release, and earns through Facebook Ads. ',
       ),
       Seg(
         'Google Play',
@@ -365,10 +374,13 @@ abstract final class SheetContent {
       'Remote Config',
       'Hasura',
       'GraphQL',
+      'REST APIs',
     ]),
     Capability('Platforms', <String>[
       'Flutter',
       'Dart',
+      'Android',
+      'iOS',
       'Flutter flavours',
       'Flutter Web / PWA',
       'Google News Toolkit',
@@ -392,8 +404,55 @@ abstract final class SheetContent {
       'Native iOS',
       'React JS',
       'Python',
+      'FlutterFlow',
     ]),
   ];
+
+  static const String aboutBig =
+      'I build high-performance Flutter apps for education, gaming and utility products.';
+  static const List<String> aboutBody = <String>[
+    'I ship scalable releases with flavours, Firebase and disciplined delivery practices. I am at my best on products that need strong backend integration, release automation and a delivery workflow that keeps working as the product grows.',
+    'Since August 2022 I have worked at BOSC Tech Labs, where I am the sole Flutter developer on BSmart. Before that I trained in Flutter at Brototype, Ernakulam.',
+  ];
+  static const String portraitCaption = 'Rohith A O · Kerala, India';
+
+  static const String servicesLead =
+      'Available for full-time roles, freelance projects and collaborations.';
+  static const List<ServiceItem> services = <ServiceItem>[
+    ServiceItem(
+      'Apps',
+      'Flutter app development',
+      'Production-ready Flutter apps for Android, iOS and Web / PWA with a scalable architecture.',
+    ),
+    ServiceItem(
+      'White-label',
+      'Multi-flavour app setup',
+      'Flutter flavour setup for large white-label rollouts and their release pipelines.',
+    ),
+    ServiceItem(
+      'Backend',
+      'Firebase integration',
+      'Authentication, realtime data, storage, remote config and custom backend workflows.',
+    ),
+    ServiceItem(
+      'Release',
+      'Release automation',
+      'Codemagic and workflow automation for repeatable, faster Android and iOS releases.',
+    ),
+    ServiceItem(
+      'Integrations',
+      'SDK and API integration',
+      'Third-party SDKs and APIs, including the Zoom Meeting SDK and GraphQL services.',
+    ),
+    ServiceItem(
+      'Quality',
+      'Performance and stability',
+      'Optimisation, bug fixing and quality improvements backed by structured testing.',
+    ),
+  ];
+
+  static const String contactAvailability =
+      'Open to full-time roles, freelance projects and collaborations. I reply within 24 hours.';
 
   static const String jobPeriod = 'Aug 2022 to present';
   static const String jobTitle = 'Senior Software Developer';

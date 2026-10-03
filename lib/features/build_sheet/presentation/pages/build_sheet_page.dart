@@ -30,8 +30,10 @@ class _BuildSheetPageState extends ConsumerState<BuildSheetPage>
   final ScrollController _scroll = ScrollController();
   final ValueNotifier<double> _progress = ValueNotifier<double>(0);
   final Map<SheetSection, GlobalKey> _keys = <SheetSection, GlobalKey>{
+    SheetSection.about: GlobalKey(),
     SheetSection.work: GlobalKey(),
     SheetSection.capabilities: GlobalKey(),
+    SheetSection.services: GlobalKey(),
     SheetSection.experience: GlobalKey(),
     SheetSection.contact: GlobalKey(),
   };
@@ -169,6 +171,12 @@ class _BuildSheetPageState extends ConsumerState<BuildSheetPage>
                     SheetWrap(child: HeroSection(intro: _intro)),
                     SheetWrap(
                       child: KeyedSubtree(
+                        key: _keys[SheetSection.about],
+                        child: const AboutSection(),
+                      ),
+                    ),
+                    SheetWrap(
+                      child: KeyedSubtree(
                         key: _keys[SheetSection.work],
                         child: const WorkSection(),
                       ),
@@ -177,6 +185,12 @@ class _BuildSheetPageState extends ConsumerState<BuildSheetPage>
                       child: KeyedSubtree(
                         key: _keys[SheetSection.capabilities],
                         child: const CapabilitiesSection(),
+                      ),
+                    ),
+                    SheetWrap(
+                      child: KeyedSubtree(
+                        key: _keys[SheetSection.services],
+                        child: const ServicesSection(),
                       ),
                     ),
                     SheetWrap(

@@ -417,7 +417,9 @@ class SheetBlock extends StatelessWidget {
 }
 
 class AvailabilityRow extends StatelessWidget {
-  const AvailabilityRow({super.key});
+  const AvailabilityRow({this.text = SheetContent.availability, super.key});
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -438,10 +440,7 @@ class AvailabilityRow extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Flexible(
-          child: Text(
-            SheetContent.availability,
-            style: SheetType.body(p.muted, 15.2, height: 1.4),
-          ),
+          child: Text(text, style: SheetType.body(p.muted, 15.2, height: 1.4)),
         ),
       ],
     );
